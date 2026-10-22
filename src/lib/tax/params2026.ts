@@ -112,4 +112,10 @@ export const P = {
   limIRA: { value: 7500, source: 'IRS Notice 2025-67: 2026 IRA limit' },
   limHsaSelf: { value: 4400, source: 'IRS Rev. Proc. 2025-19' },
   limHsaFamily: { value: 8750, source: 'IRS Rev. Proc. 2025-19' },
+  rothPhase: { value: { single: [153000, 168000], mfj: [242000, 252000] } as Record<Status, [number, number]>, source: 'IRS Notice 2025-67: 2026 Roth IRA contribution phase-out (MAGI)' },
+  iraDeductCovered: { value: { single: [81000, 91000], mfj: [129000, 149000] } as Record<Status, [number, number]>, source: 'IRS Notice 2025-67: traditional IRA deduction phase-out when covered by a workplace plan' },
+  iraDeductSpouseCovered: { value: [242000, 252000] as [number, number], source: 'IRS Notice 2025-67: phase-out for a non-covered spouse of a covered worker' },
+  addStd65: byStatus(2050, 1650, 'Rev. Proc. 2025-32 sec. 4.14(3): additional standard deduction per person age 65+'),
+  ssTaxBase: byStatus(25000, 32000, 'IRC 86: Social Security taxation first threshold (provisional income, not indexed)'),
+  ssTaxBase2: byStatus(34000, 44000, 'IRC 86: Social Security taxation second threshold (not indexed)'),
 } as const
