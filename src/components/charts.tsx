@@ -179,3 +179,138 @@ export function SplitBar({ segments, total, caption }: { segments: Segment[]; to
     </figure>
   )
 }
+
+interface LinePoint {
+  x: number
+  [k: string]: number
+}
+
+interface LineChartProps {
+  data: LinePoint[]
+  series: Series[]
+  xFormat: (x: number) => string
+  yFormat: (y: number) => string
+  xTitle?: string
+  refY?: { y: number; label: string }
+  markX?: { x: number; label: string }
+  height?: number
+  ariaLabel: string
+}
+
+function niceStep(range: number, maxTicks: number) {
+  const raw = range / Math.max(1, maxTicks)
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)))
+  const f = raw / mag
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * mag
+}
+
+/** Multi-series line chart with a hover crosshair, optional reference line and x marker. */
+export function LineChart({ data, series, xFormat, yFormat, xTitle, refY, markX, height = 300, ariaLabel }: LineChartProps) {
+  const [ref, w] = useWidth()
+  const [hover, setHover] = useState<number | null>(null)
+  const h = height
+  const m = { l: 64, r: 16, t: 14, b: xTitle ? 44 : 30 }
+  const iw = w - m.l - m.r
+  const ih = h - m.t - m.b
+  const x0 = data[0].x
+  const x1 = data[data.length - 1].x
+  const vals = data.flatMap((d) => series.map((s) => d[s.key]))
+  if (refY) vals.push(refY.y)
+  const yMinRaw = Math.min(0, ...vals)
+  const yMaxRaw = Math.max(...vals)
+  const step = niceStep(yMaxRaw - yMinRaw || 1, Math.max(3, Math.floor(ih / 52)))
+  const yMin = Math.floor(yMinRaw / step) * step
+  const yMax = Math.ceil((yMaxRaw * 1.04) / step) * step
+  const X = (x: number) => m.l + ((x - x0) / (x1 - x0 || 1)) * iw
+  const Y = (y: number) => m.t + ih - ((y - yMin) / (yMax - yMin || 1)) * ih
+  const yticks: number[] = []
+  for (let t = yMin; t <= yMax + 1e-9; t += step) yticks.push(t)
+  const xstep = niceStep(x1 - x0 || 1, Math.max(3, Math.floor(iw / 80)))
+  const xticks: number[] = []
+  for (let t = Math.ceil(x0 / xstep) * xstep; t <= x1 + 1e-9; t += xstep) xticks.push(t)
+
+  const onMove = (e: PointerEvent<SVGRectElement>) => {
+    const r = (e.currentTarget as SVGRectElement).getBoundingClientRect()
+    const x = x0 + ((e.clientX - r.left) / r.width) * (x1 - x0)
+    let best = 0
+    for (let i = 0; i < data.length; i++) if (Math.abs(data[i].x - x) < Math.abs(data[best].x - x)) best = i
+    setHover(best)
+  }
+  const hp = hover != null ? data[hover] : null
+  return (
+    <div className="chart" ref={ref}>
+      <div className="legend">
+        {series.map((s) => (
+          <span key={s.key}>
+            <i className="sw line" style={{ background: s.color }} /> {s.label}
+          </span>
+        ))}
+        {refY && (
+          <span>
+            <i className="sw line dashed" /> {refY.label}
+          </span>
+        )}
+      </div>
+      <svg width={w} height={h} role="img" aria-label={ariaLabel}>
+        {yticks.map((t) => (
+          <g key={t}>
+            <line x1={m.l} x2={w - m.r} y1={Y(t)} y2={Y(t)} className={t === 0 ? 'axis' : 'grid'} />
+            <text x={m.l - 8} y={Y(t)} className="tick" textAnchor="end" dominantBaseline="middle">
+              {yFormat(t)}
+            </text>
+          </g>
+        ))}
+        {xticks.map((t) => (
+          <text key={t} x={X(t)} y={m.t + ih + 18} className="tick" textAnchor="middle">
+            {xFormat(t)}
+          </text>
+        ))}
+        {xTitle && (
+          <text x={m.l + iw / 2} y={h - 6} className="tick" textAnchor="middle">
+            {xTitle}
+          </text>
+        )}
+        {refY && (
+          <>
+            <line x1={m.l} x2={w - m.r} y1={Y(refY.y)} y2={Y(refY.y)} className="ref-line" />
+          </>
+        )}
+        {markX && markX.x >= x0 && markX.x <= x1 && (
+          <>
+            <line x1={X(markX.x)} x2={X(markX.x)} y1={m.t} y2={m.t + ih} className="you-line" />
+            <text x={Math.min(X(markX.x) + 6, w - m.r - 90)} y={m.t + 10} className="you-label">
+              {markX.label}
+            </text>
+          </>
+        )}
+        {series.map((s) => (
+          <path key={s.key} d={data.map((d, i) => `${i ? 'L' : 'M'}${X(d.x)},${Y(d[s.key])}`).join('')} fill="none" stroke={s.color} strokeWidth={2} strokeLinejoin="round" />
+        ))}
+        {hp && (
+          <>
+            <line x1={X(hp.x)} x2={X(hp.x)} y1={m.t} y2={m.t + ih} className="crosshair" />
+            {series.map((s) => (
+              <circle key={s.key} cx={X(hp.x)} cy={Y(hp[s.key])} r={4.5} fill={s.color} className="hover-dot" />
+            ))}
+          </>
+        )}
+        <rect x={m.l} y={m.t} width={iw} height={ih} fill="transparent" onPointerMove={onMove} onPointerLeave={() => setHover(null)} style={{ touchAction: 'pan-y' }} />
+      </svg>
+      {hp && (
+        <div className="tooltip" style={{ left: Math.max(4, Math.min(X(hp.x) + 12, w - 220)), top: 36 }}>
+          <strong>{xFormat(hp.x)}</strong>
+          {series.map((s) => (
+            <div key={s.key} className="tt-row">
+              <i className="sw line" style={{ background: s.color }} /> {s.label} <span>{yFormat(hp[s.key])}</span>
+            </div>
+          ))}
+          {refY && (
+            <div className="tt-row">
+              {refY.label} <span>{yFormat(refY.y)}</span>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}

@@ -1,7 +1,7 @@
 import { useEffect, useId, useState, type ReactNode } from 'react'
 
 export const usd = (x: number) => (x < 0 ? '-$' : '$') + Math.abs(Math.round(x)).toLocaleString('en-US')
-export const usdK = (x: number) => (Math.abs(x) >= 1e6 ? `$${(x / 1e6).toFixed(2)}M` : `$${Math.round(x / 1000).toLocaleString('en-US')}k`)
+export const usdK = (x: number) => x === 0 ? '$0' : (Math.abs(x) >= 1e6 ? `$${(x / 1e6).toFixed(2)}M` : `$${Math.round(x / 1000).toLocaleString('en-US')}k`)
 export const pct = (x: number, d = 1) => `${(x * 100).toFixed(d)}%`
 
 /** Small "i" button that reveals where a number comes from. */
@@ -132,4 +132,10 @@ export function Disclosure({ title, children }: { title: string; children: React
       <div>{children}</div>
     </details>
   )
+}
+
+/** Percentage input: stores a fraction (0.074), shows 7.4 %. */
+export function PctInput({ label, value, onChange, source, hint, digits = 2 }: { label: string; value: number; onChange: (v: number) => void; source?: string; hint?: string; digits?: number }) {
+  const shown = Math.round(value * 100 * 10 ** digits) / 10 ** digits
+  return <MoneyInput label={label} value={shown} onChange={(v) => onChange(v / 100)} source={source} hint={hint} prefix="" suffix="%" />
 }

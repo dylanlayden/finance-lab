@@ -9,7 +9,7 @@ Interactive personal-finance calculators that run on **your own numbers**, using
 | Question | Status |
 |---|---|
 | Where does your next dollar go? (tax bracket explorer) | Live |
-| What does San Francisco cost you? (buy / rent / rent vs. buy) | In the lab |
+| What does San Francisco cost you? (buy / rent / rent vs. buy) | Live |
 | Mortgage Lab (amortization, extra payments, fixed vs. SOFR ARM, refinance) | In the lab |
 | Roth or traditional? | In the lab |
 | What does $1 really cost you? (tax-advantage map, HDHP + HSA vs. PPO) | In the lab |

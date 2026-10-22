@@ -2,7 +2,7 @@ import { useProfile } from '../lib/profile'
 
 const MODULES = [
   { href: '#/tax-brackets', live: true, tag: 'Taxes', title: 'Where does your next dollar go?', body: 'Your real marginal rate (federal + California + payroll), how the brackets fill up, and what a raise or a bigger 401(k) contribution is actually worth.' },
-  { live: false, tag: 'Housing', title: 'What does San Francisco cost you?', body: 'The income you need to buy the median home or rent the median apartment, by lender standards and by comfort standards, and when buying beats renting.' },
+  { href: '#/sf-cost', live: true, tag: 'Housing', title: 'What does San Francisco cost you?', body: 'The income you need to buy the median home or rent the median apartment, by lender standards and by comfort standards, and when buying beats renting.' },
   { live: false, tag: 'Mortgages', title: 'Mortgage Lab', body: 'Amortization, extra payments, a fixed rate vs. a SOFR-indexed ARM, and when a refinance pays for itself.' },
   { live: false, tag: 'Retirement', title: 'Roth or traditional?', body: 'The retirement tax rate at which each one wins, for your income and your California taxes.' },
   { live: false, tag: 'Taxes', title: 'What does $1 really cost you?', body: 'The after-tax price of a dollar through an HSA, a 401(k), pre-tax premiums or a mortgage, plus HDHP + HSA vs. a PPO.' },
