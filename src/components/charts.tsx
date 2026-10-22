@@ -195,6 +195,7 @@ interface LineChartProps {
   markX?: { x: number; label: string }
   height?: number
   ariaLabel: string
+  xStep?: number
 }
 
 function niceStep(range: number, maxTicks: number) {
@@ -205,7 +206,7 @@ function niceStep(range: number, maxTicks: number) {
 }
 
 /** Multi-series line chart with a hover crosshair, optional reference line and x marker. */
-export function LineChart({ data, series, xFormat, yFormat, xTitle, refY, markX, height = 300, ariaLabel }: LineChartProps) {
+export function LineChart({ data, series, xFormat, yFormat, xTitle, refY, markX, height = 300, ariaLabel, xStep }: LineChartProps) {
   const [ref, w] = useWidth()
   const [hover, setHover] = useState<number | null>(null)
   const h = height
@@ -225,7 +226,7 @@ export function LineChart({ data, series, xFormat, yFormat, xTitle, refY, markX,
   const Y = (y: number) => m.t + ih - ((y - yMin) / (yMax - yMin || 1)) * ih
   const yticks: number[] = []
   for (let t = yMin; t <= yMax + 1e-9; t += step) yticks.push(t)
-  const xstep = niceStep(x1 - x0 || 1, Math.max(3, Math.floor(iw / 80)))
+  const xstep = xStep ? xStep * Math.max(1, Math.ceil((x1 - x0) / xStep / Math.max(3, Math.floor(iw / 70)))) : niceStep(x1 - x0 || 1, Math.max(3, Math.floor(iw / 80)))
   const xticks: number[] = []
   for (let t = Math.ceil(x0 / xstep) * xstep; t <= x1 + 1e-9; t += xstep) xticks.push(t)
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ProfileForm } from './components/ProfileForm'
 import { usd } from './components/ui'
 import { totalPay, useProfile } from './lib/profile'
+import MortgageLab from './modules/MortgageLab'
 import SFCost from './modules/SFCost'
 import TaxExplorer from './modules/TaxExplorer'
 import Home from './pages/Home'
@@ -74,6 +75,7 @@ export default function App() {
   let page
   if (route === '/tax-brackets') page = <TaxExplorer />
   else if (route === '/sf-cost') page = <SFCost />
+  else if (route === '/mortgage') page = <MortgageLab />
   else if (route === '/methodology') page = <Methodology />
   else if (route === '/profile')
     page = (

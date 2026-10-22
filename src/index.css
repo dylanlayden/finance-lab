@@ -340,3 +340,4 @@ input[type='range'] { width: 100%; accent-color: var(--s1); margin: 10px 0 4px; 
 
 .verdicts { margin: 14px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--ink-2); font-size: 13.5px; }
 .data-table th.r, .ladder th.r { text-align: right; }
+.headline.small { font-size: 16px; margin: 14px 0; }

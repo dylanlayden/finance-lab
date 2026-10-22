@@ -26,6 +26,8 @@ export interface Profile {
   rent: number // monthly
   mortgageInterest: number // annual
   mortgageBalance: number
+  mortgageRate: number
+  mortgageYearsLeft: number
   propertyTax: number // annual
   charity: number // annual
   monthlyExpenses: number // non-housing
@@ -46,7 +48,7 @@ export const EXAMPLES: Record<string, Profile> = {
     you: person({ salary: 140000, bonus: 10000, pretaxRetirement: 9000 }),
     spouse: person(),
     otherIncome: 800, hsa: 0, healthPremiums: 1800,
-    housing: 'rent', rent: 3300, mortgageInterest: 0, mortgageBalance: 0, propertyTax: 0, charity: 600,
+    housing: 'rent', rent: 3300, mortgageInterest: 0, mortgageBalance: 0, mortgageRate: 0, mortgageYearsLeft: 0, propertyTax: 0, charity: 600,
     monthlyExpenses: 3200, cash: 25000, taxableInvestments: 30000, pretaxAccounts: 60000, rothAccounts: 15000,
   },
   family: {
@@ -55,7 +57,7 @@ export const EXAMPLES: Record<string, Profile> = {
     you: person({ salary: 210000, bonus: 21000, rsu: 60000, pretaxRetirement: 18480 }),
     spouse: person({ salary: 92000, pretaxRetirement: 11789, ssCovered: false, sdiCovered: false }),
     otherIncome: 3000, hsa: 4000, healthPremiums: 4800,
-    housing: 'own', rent: 0, mortgageInterest: 23320, mortgageBalance: 751388, propertyTax: 15301, charity: 3000,
+    housing: 'own', rent: 0, mortgageInterest: 23320, mortgageBalance: 751388, mortgageRate: 0.031, mortgageYearsLeft: 25, propertyTax: 15301, charity: 3000,
     monthlyExpenses: 8900, cash: 40000, taxableInvestments: 230000, pretaxAccounts: 307000, rothAccounts: 69000,
   },
 }
@@ -91,6 +93,9 @@ function load(): { profile: Profile; isExample: boolean } {
     const raw = localStorage.getItem(KEY)
     if (raw) {
       const saved = JSON.parse(raw)
+      // examples always load fresh, so new fields added to an example show up
+      const ex = saved.isExample && Object.values(EXAMPLES).find((e) => e.label === saved.profile?.label)
+      if (ex) return { profile: ex, isExample: true }
       return { profile: { ...EXAMPLES.single, ...saved.profile, you: person(saved.profile?.you), spouse: person(saved.profile?.spouse) }, isExample: !!saved.isExample }
     }
   } catch {

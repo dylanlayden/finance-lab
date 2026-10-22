@@ -1,5 +1,5 @@
 import { useProfile, type Person } from '../lib/profile'
-import { Check, MoneyInput, Segmented, Stepper } from './ui'
+import { Check, MoneyInput, PctInput, Segmented, Stepper } from './ui'
 
 function PersonFields({ who, title }: { who: 'you' | 'spouse'; title: string }) {
   const { profile, updatePerson } = useProfile()
@@ -68,6 +68,8 @@ export function ProfileForm({ compact = false }: { compact?: boolean }) {
             <MoneyInput label="Mortgage balance" value={p.mortgageBalance} onChange={(v) => update({ mortgageBalance: v })} />
             <MoneyInput label="Mortgage interest paid" value={p.mortgageInterest} onChange={(v) => update({ mortgageInterest: v })} hint="per year" />
             <MoneyInput label="Property tax" value={p.propertyTax} onChange={(v) => update({ propertyTax: v })} hint="per year" />
+            <PctInput label="Mortgage rate" value={p.mortgageRate} onChange={(v) => update({ mortgageRate: v })} />
+            <MoneyInput label="Years left on mortgage" prefix="" value={p.mortgageYearsLeft} onChange={(v) => update({ mortgageYearsLeft: Math.min(40, Math.round(v)) })} />
           </div>
         )}
       </fieldset>
