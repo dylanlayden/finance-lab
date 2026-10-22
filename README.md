@@ -13,7 +13,7 @@ Interactive personal-finance calculators that run on **your own numbers**, using
 | Mortgage Lab (amortization, extra payments, fixed vs. SOFR ARM, refinance) | Live |
 | Roth or traditional? | Live |
 | What does $1 really cost you? (tax-advantage map, HDHP + HSA vs. PPO) | Live |
-| Swing early, then settle (early high risk vs. steady from day one) | In the lab |
+| Swing early, then settle (early high risk vs. steady from day one) | Live |
 
 ## How it works
 

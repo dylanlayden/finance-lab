@@ -6,6 +6,7 @@ import DollarCost from './modules/DollarCost'
 import MortgageLab from './modules/MortgageLab'
 import RothVsTraditional from './modules/RothVsTraditional'
 import SFCost from './modules/SFCost'
+import SwingEarly from './modules/SwingEarly'
 import TaxExplorer from './modules/TaxExplorer'
 import Home from './pages/Home'
 import Methodology from './pages/Methodology'
@@ -80,6 +81,7 @@ export default function App() {
   else if (route === '/mortgage') page = <MortgageLab />
   else if (route === '/roth') page = <RothVsTraditional />
   else if (route === '/dollar') page = <DollarCost />
+  else if (route === '/swing') page = <SwingEarly />
   else if (route === '/methodology') page = <Methodology />
   else if (route === '/profile')
     page = (

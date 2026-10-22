@@ -6,7 +6,7 @@ const MODULES = [
   { href: '#/mortgage', live: true, tag: 'Mortgages', title: 'Mortgage Lab', body: 'Amortization, extra payments, a fixed rate vs. a SOFR-indexed ARM, and when a refinance pays for itself.' },
   { href: '#/roth', live: true, tag: 'Retirement', title: 'Roth or traditional?', body: 'The retirement tax rate at which each one wins, for your income and your California taxes.' },
   { href: '#/dollar', live: true, tag: 'Taxes', title: 'What does $1 really cost you?', body: 'The after-tax price of a dollar through an HSA, a 401(k), pre-tax premiums or a mortgage, plus HDHP + HSA vs. a PPO.' },
-  { live: false, tag: 'Investing', title: 'Swing early, then settle', body: 'Take big risks for a few years and then go steady, or invest steadily from day one? How far ahead or behind you end up, and why compounding magnifies both.' },
+  { href: '#/swing', live: true, tag: 'Investing', title: 'Swing early, then settle', body: 'Take big risks for a few years and then go steady, or invest steadily from day one? How far ahead or behind you end up, and why compounding magnifies both.' },
 ]
 
 export default function Home() {

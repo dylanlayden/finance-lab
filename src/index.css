@@ -354,3 +354,11 @@ input[type='range'] { width: 100%; accent-color: var(--s1); margin: 10px 0 4px; 
   .price-list li { grid-template-columns: 1fr 56px; }
   .price-label { grid-column: 1 / -1; }
 }
+
+/* diverging percentile bars */
+.diverge { display: flex; height: 14px; }
+.diverge .half { flex: 1; display: flex; }
+.diverge .neg { justify-content: flex-end; border-right: 1px solid var(--axis); }
+.diverge i { display: block; height: 100%; border-radius: 3px; }
+.diverge .neg i { background: var(--s2); }
+.diverge .pos i { background: var(--s1); }

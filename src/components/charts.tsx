@@ -18,6 +18,7 @@ export interface Series {
   key: string
   label: string
   color: string // CSS var
+  dash?: boolean
 }
 
 export interface MarginalPoint {
@@ -243,7 +244,7 @@ export function LineChart({ data, series, xFormat, yFormat, xTitle, refY, markX,
       <div className="legend">
         {series.map((s) => (
           <span key={s.key}>
-            <i className="sw line" style={{ background: s.color }} /> {s.label}
+            <i className="sw line" style={s.dash ? { background: `repeating-linear-gradient(90deg, ${s.color} 0 4px, transparent 4px 7px)` } : { background: s.color }} /> {s.label}
           </span>
         ))}
         {refY && (
@@ -285,7 +286,7 @@ export function LineChart({ data, series, xFormat, yFormat, xTitle, refY, markX,
           </>
         )}
         {series.map((s) => (
-          <path key={s.key} d={data.map((d, i) => `${i ? 'L' : 'M'}${X(d.x)},${Y(d[s.key])}`).join('')} fill="none" stroke={s.color} strokeWidth={2} strokeLinejoin="round" />
+          <path key={s.key} d={data.map((d, i) => `${i ? 'L' : 'M'}${X(d.x)},${Y(d[s.key])}`).join('')} fill="none" stroke={s.color} strokeWidth={2} strokeLinejoin="round" strokeDasharray={s.dash ? '5 4' : undefined} />
         ))}
         {hp && (
           <>
