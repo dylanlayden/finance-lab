@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ProfileForm } from './components/ProfileForm'
 import { usd } from './components/ui'
 import { totalPay, useProfile } from './lib/profile'
+import DollarCost from './modules/DollarCost'
 import MortgageLab from './modules/MortgageLab'
 import RothVsTraditional from './modules/RothVsTraditional'
 import SFCost from './modules/SFCost'
@@ -78,6 +79,7 @@ export default function App() {
   else if (route === '/sf-cost') page = <SFCost />
   else if (route === '/mortgage') page = <MortgageLab />
   else if (route === '/roth') page = <RothVsTraditional />
+  else if (route === '/dollar') page = <DollarCost />
   else if (route === '/methodology') page = <Methodology />
   else if (route === '/profile')
     page = (

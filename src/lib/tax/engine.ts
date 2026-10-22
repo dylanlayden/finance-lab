@@ -19,7 +19,8 @@ export interface TaxInput {
   earners: Earner[] // 1 for single, 1-2 for MFJ
   otherIncome: number // interest + ordinary dividends (treated as net investment income)
   hsa: number // HSA via payroll (attributed to earner 1)
-  sec125: number // health premiums via payroll (attributed to earner 1)
+  sec125: number // health premiums, commuter benefits via payroll (attributed to earner 1)
+  dcfsa?: number // Dependent Care FSA (attributed to earner 1)
   mortgageInterest: number
   mortgageBalance: number
   propertyTax: number
@@ -92,15 +93,17 @@ export function computeTax(input: TaxInput, opts: { continuous?: boolean } = {})
   const gross = sum(comp) + input.otherIncome
   const pretaxRet = sum(earners.map((e) => Math.min(e.pretaxRetirement, e.wages + e.rsu)))
   const pretaxSavings = pretaxRet + input.hsa
-  const agi = Math.max(0, gross - pretaxRet - input.hsa - input.sec125)
+  const dcfsa = input.dcfsa ?? 0
+  const agi = Math.max(0, gross - pretaxRet - input.hsa - input.sec125 - dcfsa)
   add('Income', 'W-2 pay (salary, bonus, RSUs)', sum(comp))
   add('Income', 'Interest & dividends', input.otherIncome)
   add('Income', 'Less: pre-tax retirement deferrals', -pretaxRet)
   add('Income', 'Less: HSA + health premiums through payroll', -(input.hsa + input.sec125))
+  if (dcfsa > 0) add('Income', 'Less: Dependent Care FSA', -dcfsa)
   add('Income', 'Adjusted gross income (AGI)', agi, undefined, true)
 
   // ---------------- payroll (needed for SDI -> SALT)
-  const ficaWages = comp.map((c, i) => Math.max(0, c - (i === 0 ? input.hsa + input.sec125 : 0)))
+  const ficaWages = comp.map((c, i) => Math.max(0, c - (i === 0 ? input.hsa + input.sec125 + dcfsa : 0)))
   const ss = sum(earners.map((e, i) => (e.ssCovered ? P.ssRate.value * Math.min(P.ssWageBase.value, ficaWages[i]) : 0)))
   const medicare = P.medicareRate.value * sum(ficaWages)
   const addMedicare = P.addMedRate.value * Math.max(0, sum(ficaWages) - P.addMedThreshold[s].value)
@@ -108,7 +111,7 @@ export function computeTax(input: TaxInput, opts: { continuous?: boolean } = {})
 
   // ---------------- California (computed first: federal SALT needs it)
   const nDeps = input.kidsUnder17 + input.otherDependents
-  const caAgi = agi + input.hsa // CA does not recognize HSAs
+  const caAgi = agi + input.hsa + Math.max(0, dcfsa - P.dcfsaCA.value) // CA does not recognize HSAs; DCFSA conformity assumed only to $5,000
   const caMortgage =
     input.mortgageInterest * (input.mortgageBalance > P.mortgageLimitCA.value ? P.mortgageLimitCA.value / input.mortgageBalance : 1)
   const caItemized = input.propertyTax + caMortgage + input.charity

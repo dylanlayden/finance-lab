@@ -341,3 +341,16 @@ input[type='range'] { width: 100%; accent-color: var(--s1); margin: 10px 0 4px; 
 .verdicts { margin: 14px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--ink-2); font-size: 13.5px; }
 .data-table th.r, .ladder th.r { text-align: right; }
 .headline.small { font-size: 16px; margin: 14px 0; }
+
+/* $1 price list */
+.price-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 10px; }
+.price-list li { display: grid; grid-template-columns: minmax(200px, 1.1fr) 2fr 56px; gap: 14px; align-items: center; padding-bottom: 10px; border-bottom: 1px solid var(--grid); }
+.price-label b { font-size: 14px; }
+.price-label .hint { margin-top: 2px; line-height: 1.35; }
+.price-bar { display: flex; gap: 2px; height: 22px; border-radius: 5px; overflow: hidden; }
+.price-bar span { min-width: 2px; }
+.price-num { text-align: right; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; }
+@media (max-width: 760px) {
+  .price-list li { grid-template-columns: 1fr 56px; }
+  .price-label { grid-column: 1 / -1; }
+}
